@@ -7,7 +7,77 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <style>
-        /* ... (previous styles remain unchanged) ... */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            height: 400px; /* Fixed height for all charts */
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .summary {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .pagination button {
+            margin: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .summary {
+                font-size: 16px;
+            }
+            table {
+                font-size: 14px;
+            }
+            th, td {
+                padding: 6px;
+            }
+            .chart-container {
+                height: 300px; /* Slightly smaller height for mobile */
+            }
+        }
     </style>
 </head>
 <body>
@@ -39,6 +109,7 @@
         </table>
     </div>
     <div class="pagination" id="pagination"></div>
+    <div id="errorLog" style="color: red;"></div>
 
     <script>
         const apiUrl = 'https://4dnedfvm13.execute-api.us-east-1.amazonaws.com/Prod/profits/';
@@ -46,16 +117,72 @@
         const itemsPerPage = 10;
         let currentPage = 1;
 
+        function logError(message, error) {
+            console.error(message, error);
+            const errorLog = document.getElementById('errorLog');
+            errorLog.innerHTML += `<p>${message}: ${error.message}</p>`;
+        }
+
         async function fetchData() {
-            const response = await fetch(apiUrl);
-            return await response.json();
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Fetched data:', data);
+                return data;
+            } catch (error) {
+                logError('Error fetching data', error);
+                throw error;
+            }
         }
 
         function processData(data) {
-            // ... (processData function remains unchanged) ...
+            if (!Array.isArray(data) || data.length === 0) {
+                throw new Error('Invalid or empty data received');
+            }
+
+            console.log('Processing data:', data);
+
+            // Sort data by creation_date in ascending order
+            data.sort((a, b) => new Date(a.creation_date) - new Date(b.creation_date));
+
+            const dailyData = {};
+            let cumulativeProfit = 0;
+
+            data.forEach(trade => {
+                if (!trade.creation_date || !trade.position_profits) {
+                    console.warn('Invalid trade data:', trade);
+                    return;
+                }
+
+                const date = trade.creation_date.split('T')[0];
+                if (!dailyData[date]) {
+                    dailyData[date] = { profit: 0, trades: 0, cumulativeProfit: 0 };
+                }
+                const profit = parseFloat(trade.position_profits);
+                dailyData[date].profit += profit;
+                dailyData[date].trades += 1;
+                cumulativeProfit += profit;
+                dailyData[date].cumulativeProfit = cumulativeProfit;
+            });
+
+            const totalProfit = cumulativeProfit;
+            const totalTrades = data.length;
+
+            console.log('Processed data:', { dailyData, totalProfit, totalTrades });
+
+            return { dailyData, totalProfit, totalTrades };
         }
 
         function createCharts(processedData) {
+            if (!processedData || !processedData.dailyData) {
+                throw new Error('Invalid processed data');
+            }
+
+            console.log('Creating charts with data:', processedData);
+
             const { dailyData, totalProfit, totalTrades } = processedData;
 
             const dates = Object.keys(dailyData);
@@ -153,7 +280,7 @@
                         options: config.options
                     });
                 } else {
-                    console.error(`Canvas element with id ${config.id} not found`);
+                    logError(`Canvas element not found`, new Error(`Canvas with id ${config.id} not found`));
                 }
             });
 
@@ -164,27 +291,58 @@
                     Total Profit: $${totalProfit.toFixed(2)} | Total Trades: ${totalTrades}
                 `;
             } else {
-                console.error('Summary element not found');
+                logError('Summary element not found', new Error('DOM element with id "summary" not found'));
             }
         }
 
         function updateTable() {
-            // ... (updateTable function remains unchanged) ...
+            const tableBody = document.querySelector('#tradesTable tbody');
+            tableBody.innerHTML = '';
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = allData.slice(startIndex, endIndex);
+
+            pageData.forEach(trade => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = new Date(trade.creation_date).toLocaleString();
+                row.insertCell(1).textContent = trade.stock;
+                row.insertCell(2).textContent = `$${parseFloat(trade.position_profits).toFixed(2)}`;
+                row.insertCell(3).textContent = trade.trade;
+            });
+
+            updatePagination();
         }
 
         function updatePagination() {
-            // ... (updatePagination function remains unchanged) ...
+            const totalPages = Math.ceil(allData.length / itemsPerPage);
+            const paginationElement = document.getElementById('pagination');
+            paginationElement.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    updateTable();
+                });
+                if (i === currentPage) {
+                    button.disabled = true;
+                }
+                paginationElement.appendChild(button);
+            }
         }
 
         async function initDashboard() {
             try {
                 allData = await fetchData();
+                console.log('Fetched all data:', allData);
                 const processedData = processData(allData);
+                console.log('Processed data:', processedData);
                 createCharts(processedData);
                 updateTable();
             } catch (error) {
-                console.error('Error initializing dashboard:', error);
-                document.body.innerHTML += '<p style="color: red;">Error loading dashboard. Please try refreshing the page.</p>';
+                logError('Error initializing dashboard', error);
             }
         }
 
