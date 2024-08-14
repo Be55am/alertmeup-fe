@@ -17,6 +17,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
+            margin-bottom: 20px;
         }
         .chart-container {
             background-color: white;
@@ -24,7 +25,7 @@
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        h1 {
+        h1, h2 {
             text-align: center;
             color: #333;
         }
@@ -32,6 +33,30 @@
             text-align: center;
             margin-bottom: 20px;
             font-size: 18px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -46,15 +71,28 @@
             <canvas id="dailyProfitChart"></canvas>
         </div>
         <div class="chart-container">
-            <canvas id="profitPercentageByStockChart"></canvas>
-        </div>
-        <div class="chart-container">
             <canvas id="numberOfTradesChart"></canvas>
         </div>
     </div>
+    <h2>Recent Trades</h2>
+    <table id="tradesTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Stock</th>
+                <th>Profit</th>
+                <th>Trade</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="pagination" id="pagination"></div>
 
     <script>
         const apiUrl = 'https://4dnedfvm13.execute-api.us-east-1.amazonaws.com/Prod/profits/';
+        let allData = [];
+        const itemsPerPage = 10;
+        let currentPage = 1;
 
         async function fetchData() {
             const response = await fetch(apiUrl);
@@ -63,7 +101,7 @@
 
         function processData(data) {
             // Sort data by creation_date
-            data.sort((a, b) => new Date(a.creation_date) - new Date(b.creation_date));
+            data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
 
             const dailyData = data.reduce((acc, trade) => {
                 const date = trade.creation_date.split('T')[0];
@@ -75,28 +113,20 @@
                 return acc;
             }, {});
 
-            const cumulativeProfit = Object.entries(dailyData).reduce((acc, [date, data]) => {
-                const lastProfit = acc.length > 0 ? acc[acc.length - 1].profit : 0;
+            const cumulativeProfit = Object.entries(dailyData).reduce((acc, [date, data], index) => {
+                const lastProfit = index > 0 ? acc[index - 1].profit : 0;
                 acc.push({ date, profit: lastProfit + data.profit });
                 return acc;
             }, []);
 
-            const profitByStock = data.reduce((acc, trade) => {
-                if (!acc[trade.stock]) {
-                    acc[trade.stock] = 0;
-                }
-                acc[trade.stock] += parseFloat(trade.position_profits);
-                return acc;
-            }, {});
-
             const totalProfit = data.reduce((sum, trade) => sum + parseFloat(trade.position_profits), 0);
             const totalTrades = data.length;
 
-            return { dailyData, cumulativeProfit, profitByStock, totalProfit, totalTrades };
+            return { dailyData, cumulativeProfit, totalProfit, totalTrades };
         }
 
         function createCharts(processedData) {
-            const { dailyData, cumulativeProfit, profitByStock, totalProfit, totalTrades } = processedData;
+            const { dailyData, cumulativeProfit, totalProfit, totalTrades } = processedData;
 
             // Cumulative Profit Over Time
             new Chart(document.getElementById('cumulativeProfitChart'), {
@@ -143,34 +173,6 @@
                 }
             });
 
-            // Profit Percentage by Stock
-            new Chart(document.getElementById('profitPercentageByStockChart'), {
-                type: 'pie',
-                data: {
-                    labels: Object.keys(profitByStock),
-                    datasets: [{
-                        data: Object.values(profitByStock),
-                        backgroundColor: [
-                            'rgb(255, 99, 132)',
-                            'rgb(54, 162, 235)',
-                            'rgb(255, 205, 86)',
-                            'rgb(75, 192, 192)',
-                            'rgb(153, 102, 255)',
-                            'rgb(255, 159, 64)'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Profit Percentage by Stock'
-                        }
-                    }
-                }
-            });
-
             // Number of Trades
             new Chart(document.getElementById('numberOfTradesChart'), {
                 type: 'bar',
@@ -199,10 +201,49 @@
             `;
         }
 
+        function updateTable() {
+            const tableBody = document.querySelector('#tradesTable tbody');
+            tableBody.innerHTML = '';
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = allData.slice(startIndex, endIndex);
+
+            pageData.forEach(trade => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = new Date(trade.creation_date).toLocaleString();
+                row.insertCell(1).textContent = trade.stock;
+                row.insertCell(2).textContent = `$${parseFloat(trade.position_profits).toFixed(2)}`;
+                row.insertCell(3).textContent = trade.trade;
+            });
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(allData.length / itemsPerPage);
+            const paginationElement = document.getElementById('pagination');
+            paginationElement.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    updateTable();
+                });
+                if (i === currentPage) {
+                    button.disabled = true;
+                }
+                paginationElement.appendChild(button);
+            }
+        }
+
         async function initDashboard() {
-            const data = await fetchData();
-            const processedData = processData(data);
+            allData = await fetchData();
+            const processedData = processData(allData);
             createCharts(processedData);
+            updateTable();
         }
 
         initDashboard();
