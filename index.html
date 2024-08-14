@@ -222,6 +222,16 @@
                                 display: true,
                                 text: 'Cumulative Profit Over Time'
                             }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toFixed(2);
+                                    }
+                                }
+                            }
                         }
                     }
                 },
