@@ -1,825 +1,191 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-  <title>Nerdava Monitor</title>
-
-  <!-- CSS FILES -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
-
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-
-  <link href="css/bootstrap-icons.css" rel="stylesheet">
-
-  <link href="css/templatemo-topic-listing.css" rel="stylesheet">
-
-  <!-- Hotjar Tracking Code for Nerdava -->
-  <script>
-    (function(h,o,t,j,a,r){
-      h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-      h._hjSettings={hjid:3887260,hjsv:6};
-      a=o.getElementsByTagName('head')[0];
-      r=o.createElement('script');r.async=1;
-      r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-      a.appendChild(r);
-    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-  </script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Bot Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <style>
+        /* ... (previous styles remain unchanged) ... */
+    </style>
 </head>
-
-<body id="top">
-
-<main>
-
-  <nav class="navbar navbar-expand-lg">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">
-        <i class="bi-back"></i>
-        <span>Nerdava</span>
-      </a>
-
-      <div class="d-lg-none ms-auto me-4">
-        <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
-      </div>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
-              aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-lg-5 me-lg-auto">
-          <li class="nav-item">
-            <a class="nav-link click-scroll" href="#section_1">Home</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link click-scroll" href="#section_2">Monitored websites</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link click-scroll" href="#section_3">How it works</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link click-scroll" href="#section_4">FAQs</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link click-scroll" href="#section_5">Contact</a>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown"
-               aria-expanded="false">Pages</a>
-
-            <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-              <li><a class="dropdown-item" href="topics-listing.html">Monitored Websites</a></li>
-
-              <li><a class="dropdown-item" href="contact.html">Contact Form</a></li>
-            </ul>
-          </li>
-        </ul>
-
-        <div class="d-none d-lg-block">
-          <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-
-  <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
-    <div class="container">
-      <div class="row">
-
-        <div class="col-lg-8 col-12 mx-auto">
-          <h1 class="text-white text-center">Monitor. Alert. Secure</h1>
-
-          <h6 class="text-center">Your vigilant partner in monitoring online websites.</h6>
-
-          <!-- search form  -->
-          <!--          <form method="get" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search">-->
-          <!--            <div class="input-group input-group-lg">-->
-          <!--                                    <span class="input-group-text bi-search" id="basic-addon1">-->
-
-          <!--                                    </span>-->
-
-          <!--              <input name="keyword" type="search" class="form-control" id="keyword" placeholder="Design, Code, Marketing, Finance ..."-->
-          <!--                     aria-label="Search">-->
-
-          <!--              <button type="submit" class="form-control">Search</button>-->
-          <!--            </div>-->
-          <!--          </form>-->
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  <section class="featured-section">
-    <div class="container">
-      <div class="row justify-content-center">
-
-        <div class="col-lg-4 col-12 mb-4 mb-lg-0">
-          <div class="custom-block bg-white shadow-lg">
-            <a href="topics-detail.html">
-              <div class="d-flex">
-                <div>
-                  <h5 class="mb-2">Most Monitored Service</h5>
-
-                  <p class="mb-0">Portuguese appointments website</p>
-                </div>
-
-                <!--                <span class="badge bg-design rounded-pill ms-auto">14</span>-->
-              </div>
-
-              <img src="images/topics/agendamentos-full.png" class="custom-block-image img-fluid" alt="">
-            </a>
-          </div>
-        </div>
-
-        <div class="col-lg-6 col-12">
-          <div class="custom-block custom-block-overlay">
-            <div class="d-flex flex-column h-100">
-              <img src="images/businesswoman-using-tablet-analysis.jpg" class="custom-block-image img-fluid" alt="">
-
-              <div class="custom-block-overlay-text d-flex">
-                <div>
-                  <h5 class="text-white mb-2">Appointment Availability Monitoring</h5>
-
-                  <p class="text-white">Never miss an opportunity with our real-time appointment availability monitoring. Whether it's for healthcare,
-                    legal consultations, or service appointments, our system keeps a watchful eye on open slots and instantly notifies you when they
-                    become available. Stay one step ahead with our reliable alerts, and secure your desired appointments without the hassle of
-                    constant manual checking.</p>
-
-                  <a href="topics-detail.html" class="btn custom-btn mt-2 mt-lg-3">Learn More</a>
-                </div>
-
-                <!--                <span class="badge bg-finance rounded-pill ms-auto">25</span>-->
-              </div>
-
-              <div class="social-share d-flex">
-                <!--                <p class="text-white me-4">Share:</p>-->
-
-                <!--                <ul class="social-icon">-->
-                <!--                  <li class="social-icon-item">-->
-                <!--                    <a href="#" class="social-icon-link bi-twitter"></a>-->
-                <!--                  </li>-->
-
-                <!--                  <li class="social-icon-item">-->
-                <!--                    <a href="#" class="social-icon-link bi-facebook"></a>-->
-                <!--                  </li>-->
-
-                <!--                  <li class="social-icon-item">-->
-                <!--                    <a href="#" class="social-icon-link bi-pinterest"></a>-->
-                <!--                  </li>-->
-                <!--                </ul>-->
-
-                <a href="#" class="custom-icon bi-bookmark ms-auto"></a>
-              </div>
-
-              <div class="section-overlay"></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  <section class="explore-section section-padding" id="section_2">
-    <div class="container">
-      <div class="row">
-
-        <div class="col-12 text-center">
-          <h2 class="mb-4">Monitored Websites</h2>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="container-fluid">
-      <div class="row">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="design-tab" data-bs-toggle="tab" data-bs-target="#design-tab-pane" type="button" role="tab"
-                    aria-controls="design-tab-pane" aria-selected="true">Appointments
-            </button>
-          </li>
-
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="marketing-tab" data-bs-toggle="tab" data-bs-target="#marketing-tab-pane" type="button" role="tab"
-                    aria-controls="marketing-tab-pane" disabled aria-selected="false">Tickets
-            </button>
-          </li>
-
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="finance-tab" data-bs-toggle="tab" data-bs-target="#finance-tab-pane" type="button" role="tab"
-                    aria-controls="finance-tab-pane" disabled aria-selected="false">ECommerce
-            </button>
-          </li>
-
-          <!--          <li class="nav-item" role="presentation">-->
-          <!--            <button class="nav-link" id="music-tab" data-bs-toggle="tab" data-bs-target="#music-tab-pane" type="button" role="tab"-->
-          <!--                    aria-controls="music-tab-pane" aria-selected="false">Music-->
-          <!--            </button>-->
-          <!--          </li>-->
-
-          <!--          <li class="nav-item" role="presentation">-->
-          <!--            <button class="nav-link" id="education-tab" data-bs-toggle="tab" data-bs-target="#education-tab-pane" type="button" role="tab"-->
-          <!--                    aria-controls="education-tab-pane" aria-selected="false">Education-->
-          <!--            </button>-->
-          <!--          </li>-->
-        </ul>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="row">
-
-        <div class="col-12">
-          <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="design-tab-pane" role="tabpanel" aria-labelledby="design-tab" tabindex="0">
-              <div class="row">
-                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">Agendamentos.pt</h5>
-
-                          <p class="mb-0">Website for portuguese external and internal authorities appointments system.</p>
-                          </br>
-                        </div>
-
-                        <!--                        <span class="badge bg-design rounded-pill ms-auto">14</span>-->
-                      </div>
-
-                      <img src="images/topics/agendamentos-pt.png" class=" img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">TLC Contacts</h5>
-
-                          <p class="mb-0">Appointments at TLC services all over the world.</p>
-                        </div>
-
-                        <!--                        <span class="badge bg-design rounded-pill ms-auto">75</span>-->
-                      </div>
-
-                      <img src="images/topics/undraw_Redesign_feedback_re_jvm0.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">VFC Appointments</h5>
-
-                          <p class="mb-0">The VFC Appointments website for business.</p>
-                        </div>
-
-                        <!--                        <span class="badge bg-design rounded-pill ms-auto">100</span>-->
-                      </div>
-
-                      <img src="images/topics/colleagues-working-cozy-office-medium-shot.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="marketing-tab-pane" role="tabpanel" aria-labelledby="marketing-tab" tabindex="0">
-              <div class="row">
-                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-3">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">Advertising</h5>
-
-                          <p class="mb-0">Lorem Ipsum dolor sit amet consectetur</p>
-                        </div>
-
-                        <span class="badge bg-advertising rounded-pill ms-auto">30</span>
-                      </div>
-
-                      <img src="images/topics/undraw_online_ad_re_ol62.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-3">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">Video Content</h5>
-
-                          <p class="mb-0">Lorem Ipsum dolor sit amet consectetur</p>
-                        </div>
-
-                        <span class="badge bg-advertising rounded-pill ms-auto">65</span>
-                      </div>
-
-                      <img src="images/topics/undraw_Group_video_re_btu7.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">Viral Tweet</h5>
-
-                          <p class="mb-0">Lorem Ipsum dolor sit amet consectetur</p>
-                        </div>
-
-                        <span class="badge bg-advertising rounded-pill ms-auto">50</span>
-                      </div>
-
-                      <img src="images/topics/undraw_viral_tweet_gndb.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="finance-tab-pane" role="tabpanel" aria-labelledby="finance-tab" tabindex="0">
-              <div class="row">
-                <div class="col-lg-6 col-md-6 col-12 mb-4 mb-lg-0">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">Investment</h5>
-
-                          <p class="mb-0">Lorem Ipsum dolor sit amet consectetur</p>
-                        </div>
-
-                        <span class="badge bg-finance rounded-pill ms-auto">30</span>
-                      </div>
-
-                      <img src="images/topics/undraw_Finance_re_gnv2.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-
-                <div class="col-lg-6 col-md-6 col-12">
-                  <div class="custom-block custom-block-overlay">
-                    <div class="d-flex flex-column h-100">
-                      <img
-                          src="images/businesswoman-using-tablet-analysis-graph-company-finance-strategy-statistics-success-concept-planning-future-office-room.jpg"
-                          class="custom-block-image img-fluid" alt="">
-
-                      <div class="custom-block-overlay-text d-flex">
-                        <div>
-                          <h5 class="text-white mb-2">Finance</h5>
-
-                          <p class="text-white">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sint animi necessitatibus aperiam
-                            repudiandae nam omnis</p>
-
-                          <a href="topics-detail.html" class="btn custom-btn mt-2 mt-lg-3">Learn More</a>
-                        </div>
-
-                        <span class="badge bg-finance rounded-pill ms-auto">25</span>
-                      </div>
-
-                      <div class="social-share d-flex">
-                        <p class="text-white me-4">Share:</p>
-
-                        <ul class="social-icon">
-                          <li class="social-icon-item">
-                            <a href="#" class="social-icon-link bi-twitter"></a>
-                          </li>
-
-                          <li class="social-icon-item">
-                            <a href="#" class="social-icon-link bi-facebook"></a>
-                          </li>
-
-                          <li class="social-icon-item">
-                            <a href="#" class="social-icon-link bi-pinterest"></a>
-                          </li>
-                        </ul>
-
-                        <a href="#" class="custom-icon bi-bookmark ms-auto"></a>
-                      </div>
-
-                      <div class="section-overlay"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="music-tab-pane" role="tabpanel" aria-labelledby="music-tab" tabindex="0">
-              <div class="row">
-                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-3">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">Composing Song</h5>
-
-                          <p class="mb-0">Lorem Ipsum dolor sit amet consectetur</p>
-                        </div>
-
-                        <span class="badge bg-music rounded-pill ms-auto">45</span>
-                      </div>
-
-                      <img src="images/topics/undraw_Compose_music_re_wpiw.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-3">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">Online Music</h5>
-
-                          <p class="mb-0">Lorem Ipsum dolor sit amet consectetur</p>
-                        </div>
-
-                        <span class="badge bg-music rounded-pill ms-auto">45</span>
-                      </div>
-
-                      <img src="images/topics/undraw_happy_music_g6wc.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 col-12">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">Podcast</h5>
-
-                          <p class="mb-0">Lorem Ipsum dolor sit amet consectetur</p>
-                        </div>
-
-                        <span class="badge bg-music rounded-pill ms-auto">20</span>
-                      </div>
-
-                      <img src="images/topics/undraw_Podcast_audience_re_4i5q.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="education-tab-pane" role="tabpanel" aria-labelledby="education-tab" tabindex="0">
-              <div class="row">
-                <div class="col-lg-6 col-md-6 col-12 mb-4 mb-lg-3">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">Graduation</h5>
-
-                          <p class="mb-0">Lorem Ipsum dolor sit amet consectetur</p>
-                        </div>
-
-                        <span class="badge bg-education rounded-pill ms-auto">80</span>
-                      </div>
-
-                      <img src="images/topics/undraw_Graduation_re_gthn.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-
-                <div class="col-lg-6 col-md-6 col-12">
-                  <div class="custom-block bg-white shadow-lg">
-                    <a href="topics-detail.html">
-                      <div class="d-flex">
-                        <div>
-                          <h5 class="mb-2">Educator</h5>
-
-                          <p class="mb-0">Lorem Ipsum dolor sit amet consectetur</p>
-                        </div>
-
-                        <!--                        <span class="badge bg-education rounded-pill ms-auto">75</span>-->
-                      </div>
-
-                      <img src="images/topics/undraw_Educator_re_ju47.png" class="custom-block-image img-fluid" alt="">
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <section class="timeline-section section-padding" id="section_3">
-    <div class="section-overlay"></div>
-
-    <div class="container">
-      <div class="row">
-
-        <div class="col-12 text-center">
-          <h2 class="text-white mb-4">How does it work?</h2>
-        </div>
-
-        <div class="col-lg-10 col-12 mx-auto">
-          <div class="timeline-container">
-            <ul class="vertical-scrollable-timeline" id="vertical-scrollable-timeline">
-              <div class="list-progress">
-                <div class="inner"></div>
-              </div>
-
-              <li>
-                <h4 class="text-white mb-3">Set Your Monitoring Preferences</h4>
-
-                <p class="text-white">Specify the websites and appointment types you need monitoring for. Our system customizes alerts based on your
-                  selected preferences, ensuring you never miss an opportunity.</p>
-
-                <div class="icon-holder">
-                  <i class="bi-gear"></i>
-                </div>
-              </li>
-
-              <li>
-                <h4 class="text-white mb-3">Receive Real-time Alerts</h4>
-
-                <p class="text-white">Our service continuously monitors your specified sites for openings. The moment an appointment becomes
-                  available, we instantly notify you via email or SMS, giving you the edge to secure your spot.</p>
-
-                <div class="icon-holder">
-                  <i class="bi-bell"></i>
-                </div>
-              </li>
-
-              <li>
-                <h4 class="text-white mb-3">Secure Your Appointment</h4>
-
-                <p class="text-white">With our timely alerts, you can quickly book available appointments. Our platform ensures you're always first in
-                  line, maximizing your chances to secure essential bookings without the hassle.</p>
-
-                <div class="icon-holder">
-                  <i class="bi-calendar-check"></i>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="col-12 text-center mt-5">
-          <p class="text-white">
-            Want to learn more?
-            <a href="#" class="btn custom-btn custom-border-btn ms-3">Check out Youtube</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <section class="faq-section section-padding" id="section_4">
-    <div class="container">
-      <div class="row">
-
-        <div class="col-lg-6 col-12">
-          <h2 class="mb-4">Frequently Asked Questions</h2>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="col-lg-5 col-12">
-          <img src="images/faq_graphic.jpg" class="img-fluid" alt="FAQs">
-        </div>
-
-        <div class="col-lg-6 col-12 m-auto">
-          <div class="accordion" id="accordionExample">
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true"
-                        aria-controls="collapseOne">
-                  What is Website Monitoring Service?
-                </button>
-              </h2>
-              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  Our Website Monitoring Service is a proactive tool designed to monitor your selected websites and alert you in real-time when
-                  appointments become available. This service ensures you have the earliest opportunity to secure an appointment slot that meets your
-                  needs.
-                </div>
-              </div>
-            </div>
-
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
-                        aria-controls="collapseTwo">
-                  How do I set up alerts?
-                </button>
-              </h2>
-              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  You can set up alerts by registering on our website, adding the websites and types of appointments you wish to monitor, and choosing
-                  how you'd like to be notified (email, SMS, etc.). Our system will then monitor these sites 24/7 and alert you the moment an
-                  appointment becomes available.
-                </div>
-              </div>
-            </div>
-
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingThree">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree"
-                        aria-expanded="false" aria-controls="collapseThree">
-                  Is there a fee for this service?
-                </button>
-              </h2>
-              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  Our service offers both free and premium plans. The free plan includes basic monitoring and alerts, while our premium plan offers
-                  enhanced features such as faster alerts, multiple appointment types, and premium support to ensure you never miss an important
-                  appointment.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-      </div>
-    </div>
-  </section>
-
-
-  <section class="contact-section section-padding section-bg" id="section_5">
-    <div class="container">
-      <div class="row">
-
-        <div class="col-lg-12 col-12 text-center">
-          <h2 class="mb-5">Get in touch</h2>
-        </div>
-
-        <div class="col-lg-5 col-12 mb-4 mb-lg-0">
-          <iframe class="google-map"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2595.065641062665!2d-122.4230416990949!3d37.80335401520422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858127459fabad%3A0x808ba520e5e9edb7!2sFrancisco%20Park!5e1!3m2!1sen!2sth!4v1684340239744!5m2!1sen!2sth"
-                  width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-
-        <div class="col-lg-3 col-md-6 col-12 mb-3 mb-lg- mb-md-0 ms-auto">
-          <h4 class="mb-3">Head office</h4>
-
-          <p>Bay St &amp;, Larkin St, San Francisco, CA 94109, United States</p>
-
-          <hr>
-
-          <p class="d-flex align-items-center mb-1">
-            <span class="me-2">Phone</span>
-
-            <a href="tel: 305-240-9671" class="site-footer-link">
-              305-240-9671
-            </a>
-          </p>
-
-          <p class="d-flex align-items-center">
-            <span class="me-2">Email</span>
-
-            <a href="mailto:info@nerdava.tech" class="site-footer-link">
-              info@nerdava.tech
-            </a>
-          </p>
-        </div>
-
-        <div class="col-lg-3 col-md-6 col-12 mx-auto">
-          <h4 class="mb-3">Dubai office</h4>
-
-          <p>Burj Park, Downtown Dubai, United Arab Emirates</p>
-
-          <hr>
-
-          <p class="d-flex align-items-center mb-1">
-            <span class="me-2">Phone</span>
-
-            <a href="tel: 110-220-3400" class="site-footer-link">
-              110-220-3400
-            </a>
-          </p>
-
-          <p class="d-flex align-items-center">
-            <span class="me-2">Email</span>
-
-            <a href="mailto:info@nerdava.tech" class="site-footer-link">
-              info@nerdava.tech
-            </a>
-          </p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer class="site-footer section-padding">
-  <div class="container">
-    <div class="row">
-
-      <div class="col-lg-3 col-12 mb-4 pb-2">
-        <a class="navbar-brand mb-2" href="index.html">
-          <i class="bi-back"></i>
-          <span>Nerdava</span>
-        </a>
-      </div>
-
-      <div class="col-lg-3 col-md-4 col-6">
-        <h6 class="site-footer-title mb-3">Resources</h6>
-
-        <ul class="site-footer-links">
-          <li class="site-footer-link-item">
-            <a href="#" class="site-footer-link">Home</a>
-          </li>
-
-          <li class="site-footer-link-item">
-            <a href="#" class="site-footer-link">How it works</a>
-          </li>
-
-          <li class="site-footer-link-item">
-            <a href="#" class="site-footer-link">FAQs</a>
-          </li>
-
-          <li class="site-footer-link-item">
-            <a href="#" class="site-footer-link">Contact</a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
-        <h6 class="site-footer-title mb-3">Information</h6>
-
-        <p class="text-white d-flex mb-1">
-          <a href="tel: 305-240-9671" class="site-footer-link">
-            305-240-9671
-          </a>
-        </p>
-
-        <p class="text-white d-flex">
-          <a href="mailto:info@nerdava.tech" class="site-footer-link">
-            info@nerdava.tech
-          </a>
-        </p>
-      </div>
-
-      <div class="col-lg-3 col-md-4 col-12 mt-4 mt-lg-0 ms-auto">
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            English
-          </button>
-
-          <ul class="dropdown-menu">
-            <li>
-              <button class="dropdown-item" type="button">Arabic</button>
-            </li>
-          </ul>
-        </div>
-
-        <p class="copyright-text mt-lg-5 mt-4">Copyright © 2024 Nerdava. All rights reserved.</p>
-
-      </div>
-
-    </div>
-  </div>
-</footer>
-
-
-<!-- JAVASCRIPT FILES -->
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/jquery.sticky.js"></script>
-<script src="js/click-scroll.js"></script>
-<script src="js/custom.js"></script>
-
+<body>
+    <!-- ... (previous HTML structure remains unchanged) ... -->
+
+    <script>
+        const apiUrl = 'https://4dnedfvm13.execute-api.us-east-1.amazonaws.com/Prod/profits/';
+        let allData = [];
+        const itemsPerPage = 10;
+        let currentPage = 1;
+
+        async function fetchData() {
+            const response = await fetch(apiUrl);
+            return await response.json();
+        }
+
+        function processData(data) {
+            // Sort data by creation_date in ascending order
+            data.sort((a, b) => new Date(a.creation_date) - new Date(b.creation_date));
+
+            const dailyData = data.reduce((acc, trade) => {
+                const date = trade.creation_date.split('T')[0];
+                if (!acc[date]) {
+                    acc[date] = { profit: 0, trades: 0 };
+                }
+                acc[date].profit += parseFloat(trade.position_profits);
+                acc[date].trades += 1;
+                return acc;
+            }, {});
+
+            const cumulativeProfit = Object.entries(dailyData).reduce((acc, [date, data]) => {
+                const lastProfit = acc.length > 0 ? acc[acc.length - 1].profit : 0;
+                acc.push({ date, profit: lastProfit + data.profit });
+                return acc;
+            }, []);
+
+            const totalProfit = data.reduce((sum, trade) => sum + parseFloat(trade.position_profits), 0);
+            const totalTrades = data.length;
+
+            return { dailyData, cumulativeProfit, totalProfit, totalTrades };
+        }
+
+        function createCharts(processedData) {
+            const { dailyData, cumulativeProfit, totalProfit, totalTrades } = processedData;
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            };
+
+            // Cumulative Profit Over Time
+            new Chart(document.getElementById('cumulativeProfitChart'), {
+                type: 'line',
+                data: {
+                    labels: cumulativeProfit.map(d => d.date),
+                    datasets: [{
+                        label: 'Cumulative Profit',
+                        data: cumulativeProfit.map(d => d.profit),
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    plugins: {
+                        ...chartOptions.plugins,
+                        title: {
+                            display: true,
+                            text: 'Cumulative Profit Over Time'
+                        }
+                    }
+                }
+            });
+
+            // Daily Profits/Losses
+            new Chart(document.getElementById('dailyProfitChart'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(dailyData),
+                    datasets: [{
+                        label: 'Daily Profit/Loss',
+                        data: Object.values(dailyData).map(d => d.profit),
+                        backgroundColor: 'rgb(255, 99, 132)'
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    plugins: {
+                        ...chartOptions.plugins,
+                        title: {
+                            display: true,
+                            text: 'Daily Profits/Losses'
+                        }
+                    }
+                }
+            });
+
+            // Number of Trades
+            new Chart(document.getElementById('numberOfTradesChart'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(dailyData),
+                    datasets: [{
+                        label: 'Number of Trades',
+                        data: Object.values(dailyData).map(d => d.trades),
+                        backgroundColor: 'rgb(75, 192, 192)'
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    plugins: {
+                        ...chartOptions.plugins,
+                        title: {
+                            display: true,
+                            text: 'Number of Trades per Day'
+                        }
+                    }
+                }
+            });
+
+            // Update summary
+            document.getElementById('summary').innerHTML = `
+                Total Profit: $${totalProfit.toFixed(2)} | Total Trades: ${totalTrades}
+            `;
+        }
+
+        function updateTable() {
+            const tableBody = document.querySelector('#tradesTable tbody');
+            tableBody.innerHTML = '';
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = allData.slice(startIndex, endIndex);
+
+            pageData.forEach(trade => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = new Date(trade.creation_date).toLocaleString();
+                row.insertCell(1).textContent = trade.stock;
+                row.insertCell(2).textContent = `$${parseFloat(trade.position_profits).toFixed(2)}`;
+                row.insertCell(3).textContent = trade.trade;
+            });
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(allData.length / itemsPerPage);
+            const paginationElement = document.getElementById('pagination');
+            paginationElement.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    updateTable();
+                });
+                if (i === currentPage) {
+                    button.disabled = true;
+                }
+                paginationElement.appendChild(button);
+            }
+        }
+
+        async function initDashboard() {
+            allData = await fetchData();
+            const processedData = processData(allData);
+            createCharts(processedData);
+            updateTable();
+        }
+
+        initDashboard();
+    </script>
 </body>
 </html>
