@@ -11,7 +11,34 @@
     </style>
 </head>
 <body>
-    <!-- ... (previous HTML structure remains unchanged) ... -->
+    <h1>Trading Bot Dashboard</h1>
+    <div class="summary" id="summary"></div>
+    <div class="dashboard">
+        <div class="chart-container">
+            <canvas id="cumulativeProfitChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="dailyProfitChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="numberOfTradesChart"></canvas>
+        </div>
+    </div>
+    <h2>Recent Trades</h2>
+    <div style="overflow-x: auto;">
+        <table id="tradesTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Stock</th>
+                    <th>Profit</th>
+                    <th>Trade</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
 
     <script>
         const apiUrl = 'https://4dnedfvm13.execute-api.us-east-1.amazonaws.com/Prod/profits/';
@@ -25,33 +52,16 @@
         }
 
         function processData(data) {
-            // Sort data by creation_date in ascending order
-            data.sort((a, b) => new Date(a.creation_date) - new Date(b.creation_date));
-
-            const dailyData = data.reduce((acc, trade) => {
-                const date = trade.creation_date.split('T')[0];
-                if (!acc[date]) {
-                    acc[date] = { profit: 0, trades: 0 };
-                }
-                acc[date].profit += parseFloat(trade.position_profits);
-                acc[date].trades += 1;
-                return acc;
-            }, {});
-
-            const cumulativeProfit = Object.entries(dailyData).reduce((acc, [date, data]) => {
-                const lastProfit = acc.length > 0 ? acc[acc.length - 1].profit : 0;
-                acc.push({ date, profit: lastProfit + data.profit });
-                return acc;
-            }, []);
-
-            const totalProfit = data.reduce((sum, trade) => sum + parseFloat(trade.position_profits), 0);
-            const totalTrades = data.length;
-
-            return { dailyData, cumulativeProfit, totalProfit, totalTrades };
+            // ... (processData function remains unchanged) ...
         }
 
         function createCharts(processedData) {
-            const { dailyData, cumulativeProfit, totalProfit, totalTrades } = processedData;
+            const { dailyData, totalProfit, totalTrades } = processedData;
+
+            const dates = Object.keys(dailyData);
+            const profits = dates.map(date => dailyData[date].profit);
+            const cumulativeProfits = dates.map(date => dailyData[date].cumulativeProfit);
+            const trades = dates.map(date => dailyData[date].trades);
 
             const chartOptions = {
                 responsive: true,
@@ -64,128 +74,122 @@
                 }
             };
 
-            // Cumulative Profit Over Time
-            new Chart(document.getElementById('cumulativeProfitChart'), {
-                type: 'line',
-                data: {
-                    labels: cumulativeProfit.map(d => d.date),
-                    datasets: [{
-                        label: 'Cumulative Profit',
-                        data: cumulativeProfit.map(d => d.profit),
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
+            const chartConfigs = [
+                {
+                    id: 'cumulativeProfitChart',
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Cumulative Profit',
+                            data: cumulativeProfits,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        ...chartOptions,
+                        plugins: {
+                            ...chartOptions.plugins,
+                            title: {
+                                display: true,
+                                text: 'Cumulative Profit Over Time'
+                            }
+                        }
+                    }
                 },
-                options: {
-                    ...chartOptions,
-                    plugins: {
-                        ...chartOptions.plugins,
-                        title: {
-                            display: true,
-                            text: 'Cumulative Profit Over Time'
+                {
+                    id: 'dailyProfitChart',
+                    type: 'bar',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Daily Profit/Loss',
+                            data: profits,
+                            backgroundColor: 'rgb(255, 99, 132)'
+                        }]
+                    },
+                    options: {
+                        ...chartOptions,
+                        plugins: {
+                            ...chartOptions.plugins,
+                            title: {
+                                display: true,
+                                text: 'Daily Profits/Losses'
+                            }
+                        }
+                    }
+                },
+                {
+                    id: 'numberOfTradesChart',
+                    type: 'bar',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Number of Trades',
+                            data: trades,
+                            backgroundColor: 'rgb(75, 192, 192)'
+                        }]
+                    },
+                    options: {
+                        ...chartOptions,
+                        plugins: {
+                            ...chartOptions.plugins,
+                            title: {
+                                display: true,
+                                text: 'Number of Trades per Day'
+                            }
                         }
                     }
                 }
-            });
+            ];
 
-            // Daily Profits/Losses
-            new Chart(document.getElementById('dailyProfitChart'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(dailyData),
-                    datasets: [{
-                        label: 'Daily Profit/Loss',
-                        data: Object.values(dailyData).map(d => d.profit),
-                        backgroundColor: 'rgb(255, 99, 132)'
-                    }]
-                },
-                options: {
-                    ...chartOptions,
-                    plugins: {
-                        ...chartOptions.plugins,
-                        title: {
-                            display: true,
-                            text: 'Daily Profits/Losses'
-                        }
-                    }
-                }
-            });
-
-            // Number of Trades
-            new Chart(document.getElementById('numberOfTradesChart'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(dailyData),
-                    datasets: [{
-                        label: 'Number of Trades',
-                        data: Object.values(dailyData).map(d => d.trades),
-                        backgroundColor: 'rgb(75, 192, 192)'
-                    }]
-                },
-                options: {
-                    ...chartOptions,
-                    plugins: {
-                        ...chartOptions.plugins,
-                        title: {
-                            display: true,
-                            text: 'Number of Trades per Day'
-                        }
-                    }
+            chartConfigs.forEach(config => {
+                const ctx = document.getElementById(config.id);
+                if (ctx) {
+                    new Chart(ctx, {
+                        type: config.type,
+                        data: config.data,
+                        options: config.options
+                    });
+                } else {
+                    console.error(`Canvas element with id ${config.id} not found`);
                 }
             });
 
             // Update summary
-            document.getElementById('summary').innerHTML = `
-                Total Profit: $${totalProfit.toFixed(2)} | Total Trades: ${totalTrades}
-            `;
-        }
-
-        function updateTable() {
-            const tableBody = document.querySelector('#tradesTable tbody');
-            tableBody.innerHTML = '';
-            
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const pageData = allData.slice(startIndex, endIndex);
-
-            pageData.forEach(trade => {
-                const row = tableBody.insertRow();
-                row.insertCell(0).textContent = new Date(trade.creation_date).toLocaleString();
-                row.insertCell(1).textContent = trade.stock;
-                row.insertCell(2).textContent = `$${parseFloat(trade.position_profits).toFixed(2)}`;
-                row.insertCell(3).textContent = trade.trade;
-            });
-
-            updatePagination();
-        }
-
-        function updatePagination() {
-            const totalPages = Math.ceil(allData.length / itemsPerPage);
-            const paginationElement = document.getElementById('pagination');
-            paginationElement.innerHTML = '';
-
-            for (let i = 1; i <= totalPages; i++) {
-                const button = document.createElement('button');
-                button.textContent = i;
-                button.addEventListener('click', () => {
-                    currentPage = i;
-                    updateTable();
-                });
-                if (i === currentPage) {
-                    button.disabled = true;
-                }
-                paginationElement.appendChild(button);
+            const summaryElement = document.getElementById('summary');
+            if (summaryElement) {
+                summaryElement.innerHTML = `
+                    Total Profit: $${totalProfit.toFixed(2)} | Total Trades: ${totalTrades}
+                `;
+            } else {
+                console.error('Summary element not found');
             }
         }
 
-        async function initDashboard() {
-            allData = await fetchData();
-            const processedData = processData(allData);
-            createCharts(processedData);
-            updateTable();
+        function updateTable() {
+            // ... (updateTable function remains unchanged) ...
         }
 
-        initDashboard();
+        function updatePagination() {
+            // ... (updatePagination function remains unchanged) ...
+        }
+
+        async function initDashboard() {
+            try {
+                allData = await fetchData();
+                const processedData = processData(allData);
+                createCharts(processedData);
+                updateTable();
+            } catch (error) {
+                console.error('Error initializing dashboard:', error);
+                document.body.innerHTML += '<p style="color: red;">Error loading dashboard. Please try refreshing the page.</p>';
+            }
+        }
+
+        // Wait for DOM to be fully loaded before initializing
+        document.addEventListener('DOMContentLoaded', initDashboard);
     </script>
 </body>
 </html>
