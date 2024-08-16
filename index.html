@@ -81,7 +81,7 @@
             flex-direction: column;
             align-items: center;
         }
-        select {
+        select, input {
             padding: 5px;
             margin-top: 5px;
         }
@@ -141,9 +141,7 @@
     <div class="filters">
         <div class="filter-group">
             <label for="stockFilter">Filter by Stock:</label>
-            <select id="stockFilter">
-                <option value="">All Stocks</option>
-            </select>
+            <input type="text" id="stockFilter" placeholder="Enter stock symbol">
         </div>
         <div class="filter-group">
             <label for="tradeFilter">Filter by Trade:</label>
@@ -440,34 +438,16 @@ function updatePagination(elementId, totalItems, currentPage, onPageChange) {
     }
 }
 
-function populateStockFilter() {
-    const stockFilter = document.getElementById('stockFilter');
-    const stocks = new Set();
-
-    allNewsData.forEach(item => {
-        if (Array.isArray(item.stock)) {
-            item.stock.forEach(stock => stocks.add(stock));
-        } else if (item.stock) {
-            stocks.add(item.stock);
-        }
-    });
-
-    stocks.forEach(stock => {
-        const option = document.createElement('option');
-        option.value = stock;
-        option.textContent = stock;
-        stockFilter.appendChild(option);
-    });
-}
-
 function applyFilters() {
     const stockFilter = document.getElementById('stockFilter');
     const tradeFilter = document.getElementById('tradeFilter');
-    const selectedStock = stockFilter.value;
+    const selectedStock = stockFilter.value.trim().toUpperCase();
     const selectedTrade = tradeFilter.value;
 
     filteredNewsData = allNewsData.filter(item => {
-        const stockMatch = !selectedStock || (Array.isArray(item.stock) ? item.stock.includes(selectedStock) : item.stock === selectedStock);
+        const stockMatch = !selectedStock || (Array.isArray(item.stock) 
+            ? item.stock.some(stock => stock.toUpperCase().includes(selectedStock))
+            : item.stock.toUpperCase().includes(selectedStock));
         const tradeMatch = !selectedTrade || item.trade.toLowerCase() === selectedTrade;
         return stockMatch && tradeMatch;
     });
@@ -488,11 +468,10 @@ async function initDashboard() {
         allNewsData = await fetchData(newsApiUrl);
         console.log('Fetched all news data:', allNewsData);
         filteredNewsData = allNewsData;
-        populateStockFilter();
         updateNewsTable();
 
         // Add event listeners for filters
-        document.getElementById('stockFilter').addEventListener('change', applyFilters);
+        document.getElementById('stockFilter').addEventListener('input', applyFilters);
         document.getElementById('tradeFilter').addEventListener('change', applyFilters);
     } catch (error) {
         logError('Error initializing dashboard', error);
