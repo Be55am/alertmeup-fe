@@ -116,7 +116,10 @@
                 <tr>
                     <th>Date</th>
                     <th>Stock</th>
+                    <th>Relevance</th>
+                    <th>Polarity</th>
                     <th>Headline</th>
+                    <th>Explanation</th>
                     <th>Sentiment</th>
                     <th>Trade</th>
                 </tr>
@@ -358,9 +361,12 @@
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = new Date(item.creation_date).toLocaleString();
                 row.insertCell(1).textContent = Array.isArray(item.stock) ? item.stock.join(', ') : item.stock;
-                row.insertCell(2).textContent = item.headline;
-                row.insertCell(3).textContent = item.sentiment;
-                row.insertCell(4).textContent = item.trade;
+                row.insertCell(2).textContent = item.relevance;
+                row.insertCell(3).textContent = item.polarity;
+                row.insertCell(4).textContent = item.headline;
+                row.insertCell(5).textContent = item.explanation;
+                row.insertCell(6).textContent = item.sentiment;
+                row.insertCell(7).textContent = item.trade;
             });
 
             updatePagination('newsPagination', allNewsData.length, currentNewsPage, (page) => {
