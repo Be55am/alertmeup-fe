@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trade AI Dashboard</title>
+    <title>Trading Bot Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <style>
@@ -85,6 +85,15 @@
             padding: 5px;
             margin-top: 5px;
         }
+        .widget-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+        }
+        .widget-controls {
+            margin-bottom: 20px;
+        }
         @media (max-width: 600px) {
             body {
                 padding: 10px;
@@ -109,59 +118,7 @@
     </style>
 </head>
 <body>
-    <!-- TradingView Widget BEGIN -->
-<div class="tradingview-widget-container">
-  <div class="tradingview-widget-container__widget"></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-  {
-  "symbols": [
-    {
-      "proName": "FOREXCOM:SPXUSD",
-      "title": "S&P 500 Index"
-    },
-    {
-      "proName": "FOREXCOM:NSXUSD",
-      "title": "US 100 Cash CFD"
-    },
-    {
-      "proName": "FX_IDC:EURUSD",
-      "title": "EUR to USD"
-    },
-    {
-      "description": "NVDA",
-      "proName": "NASDAQ:NVDA"
-    },
-    {
-      "description": "Apple",
-      "proName": "NASDAQ:AAPL"
-    },
-    {
-      "description": "Tesla",
-      "proName": "NASDAQ:TSLA"
-    },
-    {
-      "description": "AMZN",
-      "proName": "NASDAQ:AMZN"
-    },
-    {
-      "description": "MSFT",
-      "proName": "NASDAQ:MSFT"
-    },
-    {
-      "description": "Google",
-      "proName": "NASDAQ:GOOGL"
-    }
-  ],
-  "showSymbolLogo": true,
-  "isTransparent": false,
-  "displayMode": "adaptive",
-  "colorTheme": "light",
-  "locale": "en"
-}
-  </script>
-</div>
-<!-- TradingView Widget END -->
-    <h1>Trade AI Dashboard</h1>
+    <h1>Trading Bot Dashboard</h1>
     <div class="summary" id="summary"></div>
     <div class="dashboard">
         <div class="chart-container">
@@ -189,7 +146,7 @@
         </table>
     </div>
     <div class="pagination" id="pagination"></div>
-    <h2>Trade AI Data</h2>
+    <h2>Trading Bot Data</h2>
     <div class="filters">
         <div class="filter-group">
             <label for="stockFilter">Filter by Stock:</label>
@@ -224,6 +181,17 @@
     </div>
     <div class="pagination" id="newsPagination"></div>
     <div id="errorLog" style="color: red;"></div>
+
+    <div class="widget-container">
+        <div class="widget-controls">
+            <label for="widgetStockSymbol">Widget Stock Symbol:</label>
+            <input type="text" id="widgetStockSymbol" placeholder="Enter stock symbol">
+            <button id="updateWidgetStock">Update Widget</button>
+        </div>
+        <div id="stockWidget">
+            <!-- Widget will be inserted here dynamically -->
+        </div>
+    </div>
 
     <script>
         const apiUrl = 'https://4dnedfvm13.execute-api.us-east-1.amazonaws.com/Prod/profits/';
@@ -293,10 +261,9 @@ function processData(data) {
 
     return { dailyData, totalProfit, totalTrades };
 }
-
-function createCharts(processedData) {
+          function createCharts(processedData) {
     if (!processedData || !processedData.dailyData) {
-        throw new Error('Invalid processed data');
+      throw new Error('Invalid processed data');
     }
 
     console.log('Creating charts with data:', processedData);
@@ -309,187 +276,186 @@ function createCharts(processedData) {
     const trades = dates.map(date => dailyData[date].trades);
 
     const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top'
-            }
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
         }
+      }
     };
 
     const chartConfigs = [
-        {
-            id: 'cumulativeProfitChart',
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: 'Cumulative Profit',
-                    data: cumulativeProfits,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                ...chartOptions,
-                plugins: {
-                    ...chartOptions.plugins,
-                    title: {
-                        display: true,
-                        text: 'Cumulative Profit Over Time'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '$' + value.toFixed(2);
-                            }
-                        }
-                    }
-                }
-            }
+      {
+        id: 'cumulativeProfitChart',
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: 'Cumulative Profit',
+            data: cumulativeProfits,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+          }]
         },
-        {
-            id: 'dailyProfitChart',
-            type: 'bar',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: 'Daily Profit/Loss',
-                    data: profits,
-                    backgroundColor: 'rgb(255, 99, 132)'
-                }]
-            },
-            options: {
-                ...chartOptions,
-                plugins: {
-                    ...chartOptions.plugins,
-                    title: {
-                        display: true,
-                        text: 'Daily Profits/Losses'
-                    }
-                }
+        options: {
+          ...chartOptions,
+          plugins: {
+            ...chartOptions.plugins,
+            title: {
+              display: true,
+              text: 'Cumulative Profit Over Time'
             }
-        },
-        {
-            id: 'numberOfTradesChart',
-            type: 'bar',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: 'Number of Trades',
-                    data: trades,
-                    backgroundColor: 'rgb(75, 192, 192)'
-                }]
-            },
-            options: {
-                ...chartOptions,
-                plugins: {
-                    ...chartOptions.plugins,
-                    title: {
-                        display: true,
-                        text: 'Number of Trades per Day'
-                    }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '$' + value.toFixed(2);
                 }
+              }
             }
+          }
         }
+      },
+      {
+        id: 'dailyProfitChart',
+        type: 'bar',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: 'Daily Profit/Loss',
+            data: profits,
+            backgroundColor: 'rgb(255, 99, 132)'
+          }]
+        },
+        options: {
+          ...chartOptions,
+          plugins: {
+            ...chartOptions.plugins,
+            title: {
+              display: true,
+              text: 'Daily Profits/Losses'
+            }
+          }
+        }
+      },
+      {
+        id: 'numberOfTradesChart',
+        type: 'bar',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: 'Number of Trades',
+            data: trades,
+            backgroundColor: 'rgb(75, 192, 192)'
+          }]
+        },
+        options: {
+          ...chartOptions,
+          plugins: {
+            ...chartOptions.plugins,
+            title: {
+              display: true,
+              text: 'Number of Trades per Day'
+            }
+          }
+        }
+      }
     ];
 
     chartConfigs.forEach(config => {
-        const ctx = document.getElementById(config.id);
-        if (ctx) {
-            new Chart(ctx, {
-                type: config.type,
-                data: config.data,
-                options: config.options
-            });
-        } else {
-            logError(`Canvas element not found`, new Error(`Canvas with id ${config.id} not found`));
-        }
+      const ctx = document.getElementById(config.id);
+      if (ctx) {
+        new Chart(ctx, {
+          type: config.type,
+          data: config.data,
+          options: config.options
+        });
+      } else {
+        logError(`Canvas element not found`, new Error(`Canvas with id ${config.id} not found`));
+      }
     });
 
     // Update summary
     const summaryElement = document.getElementById('summary');
     if (summaryElement) {
-        summaryElement.innerHTML = `
+      summaryElement.innerHTML = `
             Total Profit: $${totalProfit.toFixed(2)} | Total Trades: ${totalTrades}
         `;
     } else {
-        logError('Summary element not found', new Error('DOM element with id "summary" not found'));
+      logError('Summary element not found', new Error('DOM element with id "summary" not found'));
     }
-}
+  }
 
-function updateTable() {
+  function updateTable() {
     const tableBody = document.querySelector('#tradesTable tbody');
     tableBody.innerHTML = '';
-    
+
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const pageData = allData.slice(startIndex, endIndex);
 
     pageData.forEach(trade => {
-        const row = tableBody.insertRow();
-        row.insertCell(0).textContent = new Date(trade.creation_date).toLocaleString();
-        row.insertCell(1).textContent = trade.stock;
-        row.insertCell(2).textContent = `$${parseFloat(trade.position_profits).toFixed(2)}`;
-        row.insertCell(3).textContent = trade.trade;
+      const row = tableBody.insertRow();
+      row.insertCell(0).textContent = new Date(trade.creation_date).toLocaleString();
+      row.insertCell(1).textContent = trade.stock;
+      row.insertCell(2).textContent = `$${parseFloat(trade.position_profits).toFixed(2)}`;
+      row.insertCell(3).textContent = trade.trade;
     });
 
     updatePagination('pagination', allData.length, currentPage, (page) => {
-        currentPage = page;
-        updateTable();
+      currentPage = page;
+      updateTable();
     });
-}
+  }
 
-function updateNewsTable() {
+  function updateNewsTable() {
     const tableBody = document.querySelector('#newsDataTable tbody');
     tableBody.innerHTML = '';
-    
+
     const startIndex = (currentNewsPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const pageData = filteredNewsData.slice(startIndex, endIndex);
 
     pageData.forEach(item => {
-        const row = tableBody.insertRow();
-        row.className = `trade-${item.trade.toLowerCase()}`;
-        row.insertCell(0).textContent = new Date(item.creation_date).toLocaleString();
-        row.insertCell(1).textContent = Array.isArray(item.stock) ? item.stock.join(', ') : item.stock;
-        row.insertCell(2).textContent = item.relevance;
-        row.insertCell(3).textContent = item.polarity;
-        row.insertCell(4).textContent = item.headline;
-        row.insertCell(5).textContent = item.explanation;
-        row.insertCell(6).textContent = item.sentiment;
-        row.insertCell(7).textContent = item.trade;
+      const row = tableBody.insertRow();
+      row.className = `trade-${item.trade.toLowerCase()}`;
+      row.insertCell(0).textContent = new Date(item.creation_date).toLocaleString();
+      row.insertCell(1).textContent = Array.isArray(item.stock) ? item.stock.join(', ') : item.stock;
+      row.insertCell(2).textContent = item.relevance;
+      row.insertCell(3).textContent = item.polarity;
+      row.insertCell(4).textContent = item.headline;
+      row.insertCell(5).textContent = item.explanation;
+      row.insertCell(6).textContent = item.sentiment;
+      row.insertCell(7).textContent = item.trade;
     });
 
     updatePagination('newsPagination', filteredNewsData.length, currentNewsPage, (page) => {
-        currentNewsPage = page;
-        updateNewsTable();
+      currentNewsPage = page;
+      updateNewsTable();
     });
-}
+  }
 
-function updatePagination(elementId, totalItems, currentPage, onPageChange) {
+  function updatePagination(elementId, totalItems, currentPage, onPageChange) {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const paginationElement = document.getElementById(elementId);
     paginationElement.innerHTML = '';
 
     for (let i = 1; i <= totalPages; i++) {
-        const button = document.createElement('button');
-        button.textContent = i;
-        button.addEventListener('click', () => {
-            onPageChange(i);
-        });
-        if (i === currentPage) {
-            button.disabled = true;
-        }
-        paginationElement.appendChild(button);
+      const button = document.createElement('button');
+      button.textContent = i;
+      button.addEventListener('click', () => {
+        onPageChange(i);
+      });
+      if (i === currentPage) {
+        button.disabled = true;
+      }
+      paginationElement.appendChild(button);
     }
-}
-
+  }
 function applyFilters() {
     const stockFilter = document.getElementById('stockFilter');
     const tradeFilter = document.getElementById('tradeFilter');
@@ -506,6 +472,33 @@ function applyFilters() {
 
     currentNewsPage = 1;
     updateNewsTable();
+
+    // Update the widget stock symbol input
+    document.getElementById('widgetStockSymbol').value = selectedStock;
+}
+
+function createStockWidget(symbol) {
+    const widgetContainer = document.getElementById('stockWidget');
+    widgetContainer.innerHTML = `
+        <div class="sta-stock-chart-widget-display">
+            <p><a href="https://www.stocktargetadvisor.com/stock/USA/NSD/${symbol}" target="_blank" style="text-decoration:none;color: #4b6db5 !important;">${symbol} Ratings</a> by Stock Target Advisor</p>
+        </div>
+        <script class="stock-chart" type="text/javascript" 
+            src="https://www.stocktargetadvisor.com/assets/js/stock_chart_widget.js"
+            data-symbol="${symbol}"
+            data-theme="wt_bg_light"
+            data-uid="159116784966bf742da305666bf742da3057"
+            data-height="680"
+            data-width="500">
+        </script>
+    `;
+}
+
+function updateStockWidget() {
+    const symbol = document.getElementById('widgetStockSymbol').value.trim().toUpperCase();
+    if (symbol) {
+        createStockWidget(symbol);
+    }
 }
 
 async function initDashboard() {
@@ -525,6 +518,17 @@ async function initDashboard() {
         // Add event listeners for filters
         document.getElementById('stockFilter').addEventListener('input', applyFilters);
         document.getElementById('tradeFilter').addEventListener('change', applyFilters);
+
+        // Initialize stock widget
+        createStockWidget('NVDA');  // Default to NVDA
+
+        // Add event listener for widget update button
+        document.getElementById('updateWidgetStock').addEventListener('click', updateStockWidget);
+
+        // Sync widget stock input with filter
+        document.getElementById('stockFilter').addEventListener('change', () => {
+            document.getElementById('widgetStockSymbol').value = document.getElementById('stockFilter').value.trim().toUpperCase();
+        });
     } catch (error) {
         logError('Error initializing dashboard', error);
     }
@@ -532,6 +536,7 @@ async function initDashboard() {
 
 // Wait for DOM to be fully loaded before initializing
 document.addEventListener('DOMContentLoaded', initDashboard);
+        
     </script>
 </body>
 </html>
